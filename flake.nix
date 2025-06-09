@@ -33,7 +33,8 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.users.egor = import ./home/gpont/home.nix;
+          # Apply home configuration for the gpont user
+          home-manager.users.gpont = import ./home/gpont/home.nix;
         }
       ] ++ localHardware;
     };
