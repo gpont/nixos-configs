@@ -1,0 +1,16 @@
+{
+    "files.associations": {
+        "*.nix": "nix"
+    },
+    "nix.enable": true,
+    "nix.serverPath": "nixd",
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "jnoortheen.nix-ide",
+    "[nix]": {
+        "editor.defaultFormatter": "jnoortheen.nix-ide",
+        "editor.formatOnSave": true
+    },
+    "terminal.integrated.env.osx": {
+        "PATH": "${env:PATH}:/run/current-system/sw/bin"
+    }
+} 

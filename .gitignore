@@ -1,0 +1,19 @@
+# Файлы Nix
+/result
+/nix/
+*.swp
+*.lock
+*.bak
+*.tmp
+
+# flake.lock можно добавить в git, если хотите фиксировать зависимости
+# flake.lock
+
+# Логи и временные файлы
+*.log
+.DS_Store
+
+# VM artifacts
+.vm-tmp/
+qemu-monitor.sock
+qemu-serial.log

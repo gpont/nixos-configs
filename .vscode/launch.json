@@ -1,0 +1,61 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Start VM",
+            "type": "shell",
+            "request": "launch",
+            "command": "./scripts/start-vm.sh",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "name": "Setup VM",
+            "type": "shell",
+            "request": "launch",
+            "command": "./scripts/setup-vm.sh",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "name": "Cleanup VM",
+            "type": "shell",
+            "request": "launch",
+            "command": "./scripts/cleanup-vm.sh",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "name": "Build Configuration",
+            "type": "shell",
+            "request": "launch",
+            "command": "nix build .#nixosConfigurations.nixvm.config.system.build.toplevel",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "name": "Test Configuration",
+            "type": "shell",
+            "request": "launch",
+            "command": "nix flake check",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Full VM Test",
+            "configurations": ["Setup VM", "Start VM"]
+        }
+    ]
+}
