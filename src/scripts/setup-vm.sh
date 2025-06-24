@@ -4,7 +4,7 @@ set -euo pipefail
 
 # Configuration
 VM_NAME="nixvm"
-VM_MEMORY="4G"
+VM_MEMORY="6144"
 VM_CORES=2
 VM_DISK_SIZE="20G"
 VM_DISK_PATH="./.vm-tmp/${VM_NAME}.qcow2"
@@ -22,4 +22,4 @@ if [ ! -f "$VM_ISO_PATH" ]; then
     curl -L "https://channels.nixos.org/nixos-24.05/latest-nixos-minimal-x86_64-linux.iso" -o "$VM_ISO_PATH"
 fi
 
-echo "VM setup complete. Run './scripts/start-vm.sh' to start the VM." 
+echo "VM setup complete. Run './src/scripts/start-vm.sh' to start the VM."

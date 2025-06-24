@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   # imports = [ /etc/nixos/hardware-configuration.nix ]; # automatically generated
@@ -38,8 +38,8 @@
   ];
 
   # Sharing configs folder from host to VM
-  fileSystems."/mnt/macshare" = {
-    device = "share";
+  fileSystems."/repo" = {
+    device = "hostrepo";
     fsType = "9p";
     options = [ "trans=virtio" "version=9p2000.L" ];
   };

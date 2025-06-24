@@ -9,37 +9,45 @@ This repository is a collection of NixOS configurations for server environments.
 ## Quick Start
 
 1. Clone the repository:
+
    ```sh
    git clone https://github.com/yourusername/nixos-config.git
    cd nixos-config
    ```
+
 2. Review and modify the configurations in `hosts/` and `home/` as needed.
 3. Install NixOS using the flake:
+
    ```sh
    nixos-install --flake .#nixvm
    ```
+
    Where `nixvm` is the name of your configuration (see flake.nix).
 
 ## Testing in QEMU VM
 
 1. Setup the VM:
+
    ```sh
    ./scripts/setup-vm.sh
    ```
 
 2. Start the VM:
+
    ```sh
    ./scripts/start-vm.sh
    ```
 
 3. Inside the VM, mount the repository:
+
    ```sh
-   mkdir -p /mnt/repo
-   mount -t 9p -o trans=virtio,version=9p2000.L repo /mnt/repo
-   cd /mnt/repo
+   mkdir -p /repo
+   mount -t 9p -o trans=virtio,version=9p2000.L repo /repo
+   cd /repo
    ```
 
 4. Install NixOS with disko:
+
    ```sh
    # Format and mount disks using disko
    nix run github:nix-community/disko -- --mode zap_create_mount ./hosts/nixvm/disko.nix
@@ -52,11 +60,13 @@ This repository is a collection of NixOS configurations for server environments.
    ```
 
 5. After installation, reboot and test your configuration:
+
    ```sh
    reboot
    ```
 
 6. Clean up when done:
+
    ```sh
    ./scripts/cleanup-vm.sh
    ```
@@ -71,4 +81,4 @@ This project is licensed under the [MIT License](LICENSE).
 - Flakes
 - Home-Manager
 - Disko
-- Server Configuration 
+- Server Configuration
