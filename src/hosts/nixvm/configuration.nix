@@ -1,12 +1,7 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 
 {
-  # imports = [ /etc/nixos/hardware-configuration.nix ]; # automatically generated
-
   system.stateVersion = "24.05";
-
-  networking.hostName = "nixvm";
-  time.timeZone = "Europe/Belgrade";
 
   users.users.gpont = {
     isNormalUser = true;
@@ -36,13 +31,6 @@
   environment.systemPackages = with pkgs; [
     git curl wget vim neovim htop btop zsh
   ];
-
-  # Sharing configs folder from host to VM
-  fileSystems."/repo" = {
-    device = "hostrepo";
-    fsType = "9p";
-    options = [ "trans=virtio" "version=9p2000.L" ];
-  };
 
   # Enable flake and new nix-command
   nix.settings.experimental-features = [ "nix-command" "flakes" ];

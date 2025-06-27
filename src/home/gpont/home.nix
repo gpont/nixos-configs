@@ -1,10 +1,10 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   home.username = "gpont";
   home.homeDirectory = "/home/gpont";
 
-  home.stateVersion = "24.05";
+  home.stateVersion = "24.11";
 
   programs.git = {
     enable = true;

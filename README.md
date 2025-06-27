@@ -1,75 +1,166 @@
 # NixOS Server Configs
 
-This repository contains my NixOS configurations for servers using flakes, home-manager, and automatic disk partitioning with [disko](https://github.com/nix-community/disko).
+This repository contains NixOS configurations for servers using flakes, home-manager, and automatic disk partitioning with [disko](https://github.com/nix-community/disko).
 
-## Description
+## Prerequisites
 
-This repository is a collection of NixOS configurations for server environments. It leverages modern Nix tooling such as flakes and home-manager to manage system and user configurations declaratively. The disk partitioning is automated using disko, ensuring a consistent setup across different hosts.
+### Installing Nix on macOS
+
+1. Install Nix package manager:
+
+```bash
+# For macOS Catalina and newer:
+sh <(curl -L https://nixos.org/nix/install)
+
+# After installation, source the nix profile:
+. ~/.nix-profile/etc/profile.d/nix.sh
+```
+
+2. Enable Flakes and Nix Command:
+
+```bash
+# Create or edit ~/.config/nix/nix.conf
+mkdir -p ~/.config/nix
+echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
+```
+
+3. Install Git (if not already installed):
+
+```bash
+nix-env -iA nixpkgs.git
+```
 
 ## Quick Start
 
 1. Clone the repository:
 
-   ```sh
-   git clone https://github.com/yourusername/nixos-config.git
-   cd nixos-config
-   ```
+```bash
+git clone https://github.com/gpont/nixos-config.git
+cd nixos-config/src
+```
 
-2. Review and modify the configurations in `hosts/` and `home/` as needed.
-3. Install NixOS using the flake:
+2. Enter the development shell (this will provide all necessary tools):
 
-   ```sh
-   nixos-install --flake .#nixvm
-   ```
+```bash
+nix develop
+```
 
-   Where `nixvm` is the name of your configuration (see flake.nix).
+3. Start the VM:
 
-## Testing in QEMU VM
+```bash
+run-nixvm
+```
 
-1. Setup the VM:
+This will automatically:
 
-   ```sh
-   ./scripts/setup-vm.sh
-   ```
+- Create a VM directory at `.vm-tmp`
+- Download the NixOS ISO if needed
+- Create a virtual disk if needed
+- Start QEMU with the correct configuration
 
-2. Start the VM:
+4. After entering the live-mode of the NixOS ISO, you need to manually mount the repository:
 
-   ```sh
-   ./scripts/start-vm.sh
-   ```
+```sh
+sudo su
+mkdir -p /repo
+mount -t 9p -o trans=virtio,version=9p2000.L,msize=104857600 src /repo
+```
 
-3. Inside the VM, mount the repository:
+5. After mounting, you can run install script to automatically install and configure the system:
 
-   ```sh
-   mkdir -p /repo
-   mount -t 9p -o trans=virtio,version=9p2000.L repo /repo
-   cd /repo
-   ```
+```sh
+cd /repo
+./scripts/install.sh
+```
 
-4. Install NixOS with disko:
+6. After installation completes, reboot the VM:
 
-   ```sh
-   # Format and mount disks using disko
-   nix run github:nix-community/disko -- --mode zap_create_mount ./hosts/nixvm/disko.nix
+```bash
+reboot
+```
 
-   # Generate hardware configuration
-   nixos-generate-config --no-filesystems --root /mnt
+7. After rebooting power off machine and run vm from disk:
 
-   # Install the system
-   nixos-install --flake .#nixvm --root /mnt
-   ```
+```bash
+sudo poweroff
+```
 
-5. After installation, reboot and test your configuration:
+```bash
+run-nixvm-disk
+```
 
-   ```sh
-   reboot
-   ```
+## Project Structure
 
-6. Clean up when done:
+```
+src/
+├── flake.nix              # Main entry point, defines VM configurations
+├── modules/               # Custom NixOS modules
+│   ├── vm/               # VM-specific configuration (network, 9p, etc.)
+│   └── qemu/             # QEMU management module
+├── hosts/                # Host-specific configurations
+│   └── nixvm/           # Configuration for the development VM
+│       ├── configuration.nix
+│       └── disko.nix    # Disk partitioning configuration
+├── home/                 # Home-manager configurations
+│   └── gpont/
+│       └── home.nix     # User-specific configuration
+└── scripts/
+    └── install.sh       # VM installation script
+```
 
-   ```sh
-   ./scripts/cleanup-vm.sh
-   ```
+## Configuration
+
+### Modifying VM Settings
+
+Edit `src/hosts/nixvm/configuration.nix` to change VM parameters:
+
+```nix
+{
+  vm = {
+    enable = true;
+    memory = 6144;  # Memory in MB
+    cores = 2;      # CPU cores
+    diskSize = "20G";
+    sharedPaths = [ "../../src" ];  # Paths to share via 9p
+  };
+}
+```
+
+### Adding Software
+
+Add system packages in `configuration.nix`:
+
+```nix
+environment.systemPackages = with pkgs; [
+  git vim curl wget
+];
+```
+
+Add user packages in `home/gpont/home.nix`:
+
+```nix
+home.packages = with pkgs; [
+  firefox vscode
+];
+```
+
+## Development Workflow
+
+1. Make changes to the configuration files
+2. Start/restart the VM with `run-nixvm`
+3. Inside the VM, test your changes:
+
+```bash
+sudo nixos-rebuild switch --flake /repo#nixvm
+```
+
+## Cleanup
+
+To remove all VM-related files:
+
+```bash
+rm -rf .vm-tmp
+```
 
 ## License
 
@@ -82,3 +173,5 @@ This project is licensed under the [MIT License](LICENSE).
 - Home-Manager
 - Disko
 - Server Configuration
+- QEMU
+- Virtual Machine

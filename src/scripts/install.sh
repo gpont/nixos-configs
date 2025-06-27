@@ -4,7 +4,7 @@ set -euo pipefail
 # === Settings ===
 REPO_DIR="/repo"
 HOSTNAME="nixvm"
-DISK="/dev/vda"  # Change to your target disk if needed
+DISK="/dev/vda"
 
 # === Installation steps overview ===
 echo -e "\n🚀 NixOS Automated Install Script\n"
